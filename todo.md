@@ -1,0 +1,6 @@
+-[] parse functions for domain of real numbers, first simple functions and maybe square functions
+-[] plot func with raylib with some resolution, resolution should be chosen based on func and/or max range provided by user or keep plotting until spacebar pressed
+-[] plot many different expressions
+-[] trig functions, abs value, mulitnomials
+-[] limit approximation as different feature with the same expression parsing and also expression creation for output
+-[] publish?
