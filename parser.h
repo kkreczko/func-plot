@@ -1,16 +1,21 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+// TODO think of a way to do trigonometry
+// TODO Fast fourier transform? might be cool
+
 typedef enum {
   TOK_Err,
   TOK_Plus,
   TOK_Minus,
   TOK_Multiply,
   TOK_Divide,
+  TOK_Power,
   TOK_End,
   TOK_ParenOpen,
   TOK_ParenClose,
-  TOK_Var
+  TOK_Var,
+  TOK_Number
 } Token;
 
 typedef struct {
@@ -26,7 +31,10 @@ typedef struct {
 
 NodeList parseExpr(char expr[]);
 
-// replace operator in expression with value for quick maths
-double evalExpr(Node expr[], double value);
+// TODO later, too lazy, trust
+int verifyExpr(NodeList expr);
+
+// replace variable in expression with value for quick maths
+double evalExpr(NodeList expr);
 
 #endif
