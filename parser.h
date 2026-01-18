@@ -21,12 +21,11 @@ typedef enum {
 typedef struct {
   double value;
   Token token;
-  char name[1];
 } Node;
 
-typedef struct {
+typedef struct NodeList {
   Node curr;
-  Node next;
+  struct NodeList *next;
 } NodeList;
 
 NodeList parseExpr(char expr[]);
@@ -36,5 +35,7 @@ int verifyExpr(NodeList expr);
 
 // replace variable in expression with value for quick maths
 double evalExpr(NodeList expr);
+
+void addItem(NodeList *list, Node *item);
 
 #endif
