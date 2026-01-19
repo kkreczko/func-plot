@@ -41,7 +41,7 @@ Node parseExpr(char *expr) {
     if (isalpha(expr[i])) {
       current->token = TOK_Var;
       current->name = (char *)malloc(sizeof(expr[i]));
-      strcpy(current->name, expr + i);
+      memcpy(current->name, expr + i, sizeof(expr[i]));
       addItem(result, current);
       i++;
       continue;
