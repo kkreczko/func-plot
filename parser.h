@@ -15,27 +15,27 @@ typedef enum {
   TOK_ParenOpen,
   TOK_ParenClose,
   TOK_Var,
-  TOK_Number
+  TOK_Number,
+  TOK_WhiteSpace,
 } Token;
 
-typedef struct {
+typedef struct Node {
   double value;
   Token token;
+  char *name;
+  struct Node *next;
 } Node;
 
-typedef struct NodeList {
-  Node curr;
-  struct NodeList *next;
-} NodeList;
-
-NodeList parseExpr(char expr[]);
+Node parseExpr(char *expr);
 
 // TODO later, too lazy, trust
-int verifyExpr(NodeList expr);
+int verifyExpr(Node expr);
 
 // replace variable in expression with value for quick maths
-double evalExpr(NodeList expr);
+double evalExpr(Node expr);
 
-void addItem(NodeList *list, Node *item);
+void addItem(Node *list, Node *item);
+
+void dump(Node *list);
 
 #endif

@@ -1,46 +1,67 @@
 #include "parser.h"
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-void addItem(NodeList *list, Node *item) {
-  struct NodeList *new = (struct NodeList *)malloc(sizeof(NodeList));
-  new->curr = *item;
-  new->next = NULL;
-  list->next = new;
+void addItem(Node *list, Node *item) {
+  while (list->next) {
+    list = list->next;
+  }
+
+  list->next = item;
+  item->next = NULL;
 }
 
-NodeList parseExpr(char expr[]) {
+void dump(Node *list) {
+  while (list) {
+    if (list->name)
+      printf("%s\n", list->name);
+    list = list->next;
+  }
+}
+
+Node parseExpr(char *expr) {
   int i = 0;
-  NodeList result;
+  Node *result = (Node *)malloc(sizeof(Node));
 
-  while (expr[i] != '\0') {
-    Node current;
+  while (*(expr + i) != '\0') {
+    Node *current = (Node *)malloc(sizeof(Node));
 
-    if (isdigit(expr[i])) {
-      current.token = TOK_Number;
-      current.value = atof(&expr[i]);
-      addItem(&result, &current);
+    if (isdigit(*(expr + i))) {
+      current->token = TOK_Number;
+      current->value = atof(expr + i);
+      current->name = "NUMBER";
+      addItem(result, current);
       i++;
       continue;
     }
 
-    switch (expr[i]) {
+    switch (*(expr + i)) {
     case '+':
-      current.token = TOK_Plus;
+      current->token = TOK_Plus;
+      current->name = "PLUS";
+      addItem(result, current);
       break;
     case '-':
-      current.token = TOK_Minus;
+      current->token = TOK_Minus;
+      current->name = "MINUS";
+      addItem(result, current);
       break;
     case ' ':
+      current->token = TOK_WhiteSpace;
+      current->name = "WHITESPACE";
+      addItem(result, current);
       break;
     default:
-      current.token = TOK_Err;
+      current->token = TOK_Err;
+      current->name = "ERR";
+      addItem(result, current);
       break;
     }
 
-    addItem(&result, &current);
     i++;
   }
 
-  return result;
+  dump(result);
+  return *result;
 }
