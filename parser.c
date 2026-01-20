@@ -16,11 +16,27 @@ void addItem(Node *list, Node *item) {
 
 void dump(Node *list) {
   while (list) {
-    if (list->name && list->token != TOK_WhiteSpace)
+    if (list->name)
       printf("%s\n", list->name);
     list = list->next;
   }
 }
+
+// ??? scp-69420
+int isReserved(char name) {
+  switch (name) {
+  case 's':
+    return 1;
+  case 'c':
+    return 1;
+  case 'p':
+    return 1;
+  default:
+    return 0;
+  }
+}
+
+void parseNumbers(Node *list) { return; }
 
 Node parseExpr(char *expr) {
   int i = 0;
@@ -38,7 +54,7 @@ Node parseExpr(char *expr) {
       continue;
     }
 
-    if (isalpha(expr[i])) {
+    if (isalpha(expr[i]) && !isReserved(expr[i])) {
       current->token = TOK_Var;
       current->name = (char *)malloc(sizeof(expr[i]));
       memcpy(current->name, expr + i, sizeof(expr[i]));
@@ -57,8 +73,38 @@ Node parseExpr(char *expr) {
       current->name = "MINUS";
       break;
     case ' ':
-      current->token = TOK_WhiteSpace;
-      current->name = "WHITESPACE";
+      break;
+    case '/':
+      current->token = TOK_Divide;
+      current->name = "DIVIDE";
+      break;
+    case '*':
+      current->token = TOK_Multiply;
+      current->name = "MULTIPLY";
+      break;
+    case '(':
+      current->token = TOK_ParenOpen;
+      current->name = "PARENOPEN";
+      break;
+    case ')':
+      current->token = TOK_ParenClose;
+      current->name = "PARENCLOSE";
+      break;
+    case '^':
+      current->token = TOK_Power;
+      current->name = "POWER";
+      break;
+    case 's':
+      current->token = TOK_Sin;
+      current->name = "SINUS";
+      break;
+    case 'c':
+      current->token = TOK_Sin;
+      current->name = "COSINUS";
+      break;
+    case 'p':
+      current->token = TOK_Pi;
+      current->name = "PI";
       break;
     default:
       current->token = TOK_Err;
@@ -71,6 +117,6 @@ Node parseExpr(char *expr) {
     i++;
   }
 
-  dump(result);
+  parseNumbers(result);
   return *result;
 }

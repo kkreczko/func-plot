@@ -1,9 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-// TODO think of a way to do trigonometry
-// TODO Fast fourier transform? might be cool
-
 typedef enum {
   TOK_Err,
   TOK_Plus,
@@ -16,7 +13,9 @@ typedef enum {
   TOK_ParenClose,
   TOK_Var,
   TOK_Number,
-  TOK_WhiteSpace,
+  TOK_Pi,
+  TOK_Sin,
+  TOK_Cos,
 } Token;
 
 typedef struct Node {
@@ -28,14 +27,14 @@ typedef struct Node {
 
 Node parseExpr(char *expr);
 
-// TODO later, too lazy, trust
-int verifyExpr(Node expr);
+int isReserved(char name);
 
-// replace variable in expression with value for quick maths
-double evalExpr(Node expr);
+int verifyExpr(Node expr);
 
 void addItem(Node *list, Node *item);
 
 void dump(Node *list);
+
+void parseNumbers(Node *list);
 
 #endif
