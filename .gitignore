@@ -1,5 +1,4 @@
-./todo.md
-./plot
+todo.md
 *.o
 *.ll
 plot
