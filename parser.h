@@ -16,6 +16,7 @@ typedef enum {
   TOK_Pi,
   TOK_Sin,
   TOK_Cos,
+  TOK_Euler,
 } Token;
 
 typedef struct Node {

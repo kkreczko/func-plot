@@ -18,7 +18,7 @@ void dump(Node *list) {
   while (list) {
     if (list->name)
       printf("%s; ", list->name);
-    if (list->token == TOK_Number)
+    if (list->token == TOK_Number || list->token == TOK_Pi || list->token == TOK_Euler)
       printf("VALUE -> %f;", list->value);
     printf("\n");
     list = list->next;
@@ -33,6 +33,8 @@ int isReserved(char name) {
   case 'c':
     return 1;
   case 'p':
+    return 1;
+  case 'e':
     return 1;
   default:
     return 0;
@@ -113,6 +115,12 @@ Node parseExpr(char *expr) {
     case 'p':
       current->token = TOK_Pi;
       current->name = "PI";
+      current->value = 3.1415926535;
+      break;
+    case 'e':
+      current->token = TOK_Euler;
+      current->name = "EULER";
+      current->value = 2.71828;
       break;
     default:
       current->token = TOK_Err;
