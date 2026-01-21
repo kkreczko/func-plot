@@ -17,7 +17,10 @@ void addItem(Node *list, Node *item) {
 void dump(Node *list) {
   while (list) {
     if (list->name)
-      printf("%s\n", list->name);
+      printf("%s; ", list->name);
+    if (list->token == TOK_Number)
+      printf("VALUE -> %f;", list->value);
+    printf("\n");
     list = list->next;
   }
 }
@@ -36,7 +39,10 @@ int isReserved(char name) {
   }
 }
 
-void parseNumbers(Node *list) { return; }
+void parseNumbers(Node *list) { 
+
+  return; 
+}
 
 Node parseExpr(char *expr) {
   int i = 0;
@@ -46,8 +52,10 @@ Node parseExpr(char *expr) {
     Node *current = (Node *)malloc(sizeof(Node));
 
     if (isdigit(expr[i])) {
+      char *newValue = (char *)malloc(sizeof(char));
+      *newValue = expr[i];
       current->token = TOK_Number;
-      current->value = atof(expr + i);
+      current->value = atof(newValue);
       current->name = "NUMBER";
       addItem(result, current);
       i++;
@@ -57,7 +65,7 @@ Node parseExpr(char *expr) {
     if (isalpha(expr[i]) && !isReserved(expr[i])) {
       current->token = TOK_Var;
       current->name = (char *)malloc(sizeof(expr[i]));
-      memcpy(current->name, expr + i, sizeof(expr[i]));
+      memcpy(current->name, &expr[i], sizeof(expr[i]));
       addItem(result, current);
       i++;
       continue;
