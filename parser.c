@@ -1,6 +1,7 @@
 #include "parser.h"
 
 #include <ctype.h>
+#include <math.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,16 +43,30 @@ int isReserved(char name) {
   }
 }
 
-void combineNumbers(Node *list) {
-  // Node *first;
-  // Node *last;
+double calculateValue(double *nodeValues, int exponent) {
+  double result = 0;
 
-  while (list->next) {
-    double values_buff[128];
-    int exponent = 0;
-    if (list->next && list->token == TOK_Number) {
-      values_buff[exponent] = list->value;
+  for (int i = exponent; i >= 0; i--) {
+    result += *(nodeValues + sizeof(double) * i)  * pow(10, i);
+  }
+
+  return result;
+}
+
+void combineNumbers(Node *list) {
+  Node *last;
+  double values_buff[NODE_BUFF];
+  int exponent = -1;
+
+  while (list) {
+    if (list->token == TOK_Number) {
       exponent++;
+      values_buff[exponent] = list->value;
+      last = list;
+    } else {
+      last->value = calculateValue(values_buff, exponent);
+      memset(values_buff, 0, sizeof(values_buff));
+      exponent = -1;
     }
     list = list->next;
   }
@@ -59,13 +74,13 @@ void combineNumbers(Node *list) {
 
 Node parseExpr(char *expr) {
   int i = 0;
-  Node *result = (Node *)malloc(sizeof(Node));
+  Node *result = malloc(sizeof(Node));
 
   while (expr[i] != '\0') {
-    Node *current = (Node *)malloc(sizeof(Node));
+    Node *current = malloc(sizeof(Node));
 
     if (isdigit(expr[i])) {
-      char *newValue = (char *)malloc(sizeof(char));
+      char *newValue = malloc(sizeof(char));
       *newValue = expr[i];
       current->token = TOK_Number;
       current->value = atof(newValue);
@@ -77,7 +92,7 @@ Node parseExpr(char *expr) {
 
     if (isalpha(expr[i]) && !isReserved(expr[i])) {
       current->token = TOK_Var;
-      current->name = (char *)malloc(sizeof(expr[i]));
+      current->name = malloc(sizeof(expr[i]));
       memcpy(current->name, &expr[i], sizeof(expr[i]));
       addItem(result, current);
       i++;
