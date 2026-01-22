@@ -36,6 +36,6 @@ void addItem(Node *list, Node *item);
 
 void dump(Node *list);
 
-void parseNumbers(Node *list);
+void combineNumbers(Node *list);
 
 #endif

@@ -1,6 +1,7 @@
 #include "parser.h"
 
 #include <ctype.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,14 +19,14 @@ void dump(Node *list) {
   while (list) {
     if (list->name)
       printf("%s; ", list->name);
-    if (list->token == TOK_Number || list->token == TOK_Pi || list->token == TOK_Euler)
+    if (list->token == TOK_Number || list->token == TOK_Pi ||
+        list->token == TOK_Euler)
       printf("VALUE -> %f;", list->value);
     printf("\n");
     list = list->next;
   }
 }
 
-// ??? scp-69420
 int isReserved(char name) {
   switch (name) {
   case 's':
@@ -41,9 +42,19 @@ int isReserved(char name) {
   }
 }
 
-void parseNumbers(Node *list) { 
+void combineNumbers(Node *list) {
+  // Node *first;
+  // Node *last;
 
-  return; 
+  while (list->next) {
+    double values_buff[128];
+    int exponent = 0;
+    if (list->next && list->token == TOK_Number) {
+      values_buff[exponent] = list->value;
+      exponent++;
+    }
+    list = list->next;
+  }
 }
 
 Node parseExpr(char *expr) {
@@ -133,6 +144,6 @@ Node parseExpr(char *expr) {
     i++;
   }
 
-  parseNumbers(result);
+  combineNumbers(result);
   return *result;
 }
