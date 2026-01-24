@@ -18,12 +18,10 @@ void addItem(Node *list, Node *item) {
 
 void dump(Node *list) {
   while (list) {
-    if (list->name)
-      printf("%s; ", list->name);
-    if (list->token == TOK_Number || list->token == TOK_Pi ||
-        list->token == TOK_Euler)
-      printf("VALUE -> %f;", list->value);
-    printf("\n");
+    if (list->token == TOK_Number || list->token == TOK_Pi || list->token == TOK_Euler)
+      printf("%s; VALUE -> %f\n", list->name, list->value);
+    else if (list->name)
+      printf("%s\n", list->name);
     list = list->next;
   }
 }
@@ -47,14 +45,13 @@ double calculateValue(double *nodeValues, int exponent) {
   double result = 0;
 
   for (int i = exponent; i >= 0; i--) {
-    result += *(nodeValues + sizeof(double) * i)  * pow(10, i);
+    result += nodeValues[exponent - i] * pow(10, i);
   }
 
   return result;
 }
 
 void combineNumbers(Node *list) {
-  Node *last;
   double values_buff[NODE_BUFF];
   int exponent = -1;
 
@@ -62,11 +59,23 @@ void combineNumbers(Node *list) {
     if (list->token == TOK_Number) {
       exponent++;
       values_buff[exponent] = list->value;
-      last = list;
+      list->value = calculateValue(values_buff, exponent);
     } else {
-      last->value = calculateValue(values_buff, exponent);
       memset(values_buff, 0, sizeof(values_buff));
       exponent = -1;
+    }
+    list = list->next;
+  }
+}
+
+void removeRedundantNumbers(Node *list) {
+  Node *head;
+
+  while (list->next) {
+    if (list->next->token == TOK_Number && list->token != TOK_Number) {
+      head = list;
+    } else if (list->next->token != TOK_Number && list->token == TOK_Number) {
+      head->next = list;
     }
     list = list->next;
   }
@@ -158,7 +167,13 @@ Node parseExpr(char *expr) {
 
     i++;
   }
+  
+  Node *end = malloc(sizeof(Node));
+  end->token = TOK_End;
+  end->name = "FIN";
+  addItem(result, end);
 
   combineNumbers(result);
+  removeRedundantNumbers(result);
   return *result;
 }
