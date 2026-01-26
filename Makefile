@@ -14,7 +14,7 @@ llvm: main.c
 	clang -S -emit-llvm -lm eval.c -o eval.ll
 
 app: main.o parser.o eval.o
-	$(CC) $(CFLAGS) -o plot main.o parser.o -lm
+	$(CC) $(CFLAGS) -o plot main.o parser.o eval.o -lm
 
 parser.o: parser.c
 	$(CC) $(CFLAGS) -c parser.c
