@@ -18,7 +18,8 @@ void addItem(Node *list, Node *item) {
 
 void dump(Node *list) {
   while (list) {
-    if (list->token == TOK_Number || list->token == TOK_Pi || list->token == TOK_Euler)
+    if (list->token == TOK_Number || list->token == TOK_Pi ||
+        list->token == TOK_Euler)
       printf("%s; VALUE -> %f\n", list->name, list->value);
     else if (list->name)
       printf("%s\n", list->name);
@@ -84,6 +85,9 @@ void removeRedundantNumbers(Node *list) {
 Node parseExpr(char *expr) {
   int i = 0;
   Node *result = malloc(sizeof(Node));
+
+  result->token = TOK_Start;
+  result->name = "START";
 
   while (expr[i] != '\0') {
     Node *current = malloc(sizeof(Node));
@@ -167,7 +171,7 @@ Node parseExpr(char *expr) {
 
     i++;
   }
-  
+
   Node *end = malloc(sizeof(Node));
   end->token = TOK_End;
   end->name = "FIN";
