@@ -14,7 +14,6 @@ typedef enum {
   TOK_End,
   TOK_ParenOpen,
   TOK_ParenClose,
-  TOK_X,
   TOK_Var,
   TOK_Number,
   TOK_Pi,
