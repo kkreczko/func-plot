@@ -12,9 +12,13 @@ llvm: main.c
 	clang -S -emit-llvm -lm main.c -o main.ll
 	clang -S -emit-llvm -lm parser.c -o parser.ll
 	clang -S -emit-llvm -lm eval.c -o eval.ll
+	clang -S -emit-llvm -lm reorder.c -o reorder.ll
 
-app: main.o parser.o eval.o
-	$(CC) $(CFLAGS) -o plot main.o parser.o eval.o -lm
+app: main.o parser.o eval.o reorder.o
+	$(CC) $(CFLAGS) -o plot main.o parser.o eval.o reorder.o -lm
+
+reorder.o:
+	$(CC) $(CFLAGS) -c reorder.c
 
 parser.o: parser.c
 	$(CC) $(CFLAGS) -c parser.c

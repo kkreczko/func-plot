@@ -7,6 +7,5 @@
 
 double evalExpr(Node *expression, double value);
 double evalSubExpr(Node *list);
-int isOperator(Node *item);
 
 #endif

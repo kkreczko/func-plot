@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "reorder.h"
 
 #include <ctype.h>
 #include <math.h>
@@ -179,5 +180,6 @@ Node parseExpr(char *expr) {
 
   combineNumbers(result);
   removeRedundantNumbers(result);
+  reorderToPolishNotation(result);
   return *result;
 }
