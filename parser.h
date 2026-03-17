@@ -22,6 +22,7 @@ typedef enum {
   TOK_Euler,
 } Token;
 
+// TODO switch current linked list approach in parsing to node stack
 typedef struct Node {
   double value;
   Token token;

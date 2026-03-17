@@ -3,8 +3,8 @@
 
 #include "parser.h"
 
-#define OPERATOR_STACK_SIZE 256
-#define EXIT_QUEUE_SIZE 256
+#define NODE_STACK_SIZE 256
+#define NODE_QUEUE_SIZE 256
 
 typedef struct NodeStack {
 } NodeStack;

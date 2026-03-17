@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// TODO switch from current linked list approach to some more general node
+// container
 void addItem(Node *list, Node *item) {
   while (list->next) {
     list = list->next;
