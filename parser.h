@@ -27,7 +27,6 @@ typedef struct Node {
   double value;
   Token token;
   char *name;
-  struct Node *next;
 } Node;
 
 Node parseExpr(char *expr);

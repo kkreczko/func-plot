@@ -9,15 +9,6 @@
 
 // TODO switch from current linked list approach to some more general node
 // container
-void addItem(Node *list, Node *item) {
-  while (list->next) {
-    list = list->next;
-  }
-
-  list->next = item;
-  item->next = NULL;
-}
-
 int isReserved(char name) {
   switch (name) {
   case 's':
