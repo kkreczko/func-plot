@@ -4,7 +4,6 @@
 #include <ctype.h>
 #include <math.h>
 #include <stddef.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -17,17 +16,6 @@ void addItem(Node *list, Node *item) {
 
   list->next = item;
   item->next = NULL;
-}
-
-void dump(Node *list) {
-  while (list) {
-    if (list->token == TOK_Number || list->token == TOK_Pi ||
-        list->token == TOK_Euler)
-      printf("%s; VALUE -> %f\n", list->name, list->value);
-    else if (list->name)
-      printf("%s\n", list->name);
-    list = list->next;
-  }
 }
 
 int isReserved(char name) {

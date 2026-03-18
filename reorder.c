@@ -5,17 +5,14 @@ void reorderToPolishNotation(Node *result) { return; }
 
 int getOperatorPriority(Node *item) {
   switch (item->token) {
-  case TOK_ParenOpen:
-  case TOK_ParenClose:
-    return 99;
   case TOK_Power:
-    return 87;
+    return 2137;
   case TOK_Multiply:
   case TOK_Divide:
-    return 69;
+    return 420;
   case TOK_Plus:
   case TOK_Minus:
-    return 42;
+    return 69;
   default:
     return 0;
   }
@@ -28,12 +25,15 @@ int isOperator(Node *item) {
   case TOK_Divide:
   case TOK_Multiply:
   case TOK_Power:
-  case TOK_ParenOpen:
-  case TOK_ParenClose:
     return 1;
   default:
     return 0;
   }
+}
+
+int isParen(Node *item) {
+  Token token = item->token;
+  return (token == TOK_ParenOpen || token == TOK_ParenClose);
 }
 
 int isNumOrVar(Node *item) {
