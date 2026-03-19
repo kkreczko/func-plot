@@ -4,11 +4,19 @@
 #include <ctype.h>
 #include <math.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// TODO switch from current linked list approach to some more general node
-// container
+void addItem(Node *list, Node *item) {
+  while (list->next) {
+    list = list->next;
+  }
+
+  list->next = item;
+  item->next = NULL;
+}
+
 int isReserved(char name) {
   switch (name) {
   case 's':
@@ -21,6 +29,17 @@ int isReserved(char name) {
     return 1;
   default:
     return 0;
+  }
+}
+
+void dump(Node *list) {
+  while (list) {
+    if (list->token == TOK_Number || list->token == TOK_Pi ||
+        list->token == TOK_Euler)
+      printf("%s; VALUE -> %f\n", list->name, list->value);
+    else if (list->name)
+      printf("%s\n", list->name);
+    list = list->next;
   }
 }
 

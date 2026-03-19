@@ -27,13 +27,16 @@ typedef struct Node {
   double value;
   Token token;
   char *name;
+  struct Node *next;
 } Node;
 
+void dump(Node *list);
 Node parseExpr(char *expr);
 void removeRedundantNumbers(Node *expr);
 int isReserved(char name);
 int verifyExpr(Node expr);
 void addItem(Node *list, Node *item);
+
 void combineNumbers(Node *list);
 double calculateValue(double *nodeValues, int exponent);
 

@@ -6,9 +6,10 @@
 typedef struct NodeContainer {
   Node *current;
   struct NodeContainer *next;
+  int stackPtr;
 } NodeContainer;
 
-void dump(NodeContainer *list);
+void dumpContainer(NodeContainer *list);
 void push(NodeContainer *list);
 Node pop(NodeContainer *list);
 void append(NodeContainer *list);

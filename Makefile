@@ -9,29 +9,34 @@ debug: CFLAGS = -Werror -g -Wall
 debug: app
 
 llvm: main.c
-	clang -S -emit-llvm -lm main.c -o main.ll
-	clang -S -emit-llvm -lm parser.c -o parser.ll
-	clang -S -emit-llvm -lm eval.c -o eval.ll
-	clang -S -emit-llvm -lm reorder.c -o reorder.ll
-	clang -S -emit-llvm -lm node_containers.c -o node_containers.ll
+	mkdir -p llvm
+	clang -S -emit-llvm -lm src/main.c -o llvm/main.ll
+	clang -S -emit-llvm -lm src/parser.c -o llvm/parser.ll
+	clang -S -emit-llvm -lm src/eval.c -o llvm/eval.ll
+	clang -S -emit-llvm -lm src/reorder.c -o llvm/reorder.ll
+	clang -S -emit-llvm -lm src/node_containers.c -o llvm/node_containers.ll
 
-app: main.o parser.o eval.o reorder.o node_containers.o
-	$(CC) $(CFLAGS) -o plot main.o parser.o eval.o reorder.o node_containers.o -lm
+app: setup main.o parser.o eval.o reorder.o node_containers.o
+	$(CC) $(CFLAGS) -o plot obj/main.o obj/parser.o obj/eval.o obj/reorder.o obj/node_containers.o -lm
 
-node_containers.o:
-	$(CC) $(CFLAGS) -c node_containers.c
+node_containers.o: src/node_containers.c
+	$(CC) $(CFLAGS) -c src/node_containers.c -o obj/node_containers.o
 
-reorder.o:
-	$(CC) $(CFLAGS) -c reorder.c
+reorder.o: src/reorder.c
+	$(CC) $(CFLAGS) -c src/reorder.c -o obj/reorder.o
 
-parser.o: parser.c
-	$(CC) $(CFLAGS) -c parser.c
+parser.o: src/parser.c
+	$(CC) $(CFLAGS) -c src/parser.c -o obj/parser.o
 
-eval.o: eval.c
-	$(CC) $(CFLAGS) -c eval.c
+eval.o: src/eval.c
+	$(CC) $(CFLAGS) -c src/eval.c -o obj/eval.o
 
-main.o: main.c
-	$(CC) $(CFLAGS) -c main.c
+main.o: src/main.c
+	$(CC) $(CFLAGS) -c src/main.c -o obj/main.o
+
+setup:
+	mkdir -p obj
 
 clean:
+	rm -rf obj
 	rm -f plot *.o *.ll
