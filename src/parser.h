@@ -20,6 +20,7 @@ typedef enum {
   TOK_Sin,
   TOK_Cos,
   TOK_Euler,
+  TOK_Test,
 } Token;
 
 // TODO switch current linked list approach in parsing to node stack
@@ -31,13 +32,15 @@ typedef struct Node {
 } Node;
 
 void dump(Node *list);
+
 Node parseExpr(char *expr);
-void removeRedundantNumbers(Node *expr);
-int isReserved(char name);
 int verifyExpr(Node expr);
+
+int isReserved(char name);
 void addItem(Node *list, Node *item);
 
 void combineNumbers(Node *list);
+void removeRedundantNumbers(Node *expr);
 double calculateValue(double *nodeValues, int exponent);
 
 #endif

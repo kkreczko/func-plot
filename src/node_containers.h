@@ -3,15 +3,15 @@
 
 #include "parser.h"
 
+#define CONTAINER_SIZE 256
+
 typedef struct NodeContainer {
-  Node *current;
-  struct NodeContainer *next;
+  Node items[CONTAINER_SIZE];
   int stackPtr;
 } NodeContainer;
 
 void dumpContainer(NodeContainer *list);
-void push(NodeContainer *list);
-Node pop(NodeContainer *list);
-void append(NodeContainer *list);
+void push(NodeContainer *list, Node *item);
+Node *pop(NodeContainer *list);
 
 #endif // !NODE_CONTAINERS_H

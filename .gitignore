@@ -3,4 +3,6 @@ todo.md
 *.ll
 plot
 core*
+vgcore*
 obj/
+

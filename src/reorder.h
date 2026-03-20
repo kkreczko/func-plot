@@ -1,7 +1,7 @@
 #ifndef REORDER_H
 #define REORDER_H
 
-#include "parser.h"
+#include "node_containers.h"
 
 void reorderToPolishNotation(Node *result);
 int getOperatorPriority(Node *item);

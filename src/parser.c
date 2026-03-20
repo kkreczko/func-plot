@@ -85,21 +85,17 @@ void removeRedundantNumbers(Node *list) {
 
 Node parseExpr(char *expr) {
   int i = 0;
-  Node *result = malloc(sizeof(Node));
-
-  result->token = TOK_Start;
-  result->name = "START";
+  Node result = {.token = TOK_Start, .name = "START"};
 
   while (expr[i] != '\0') {
     Node *current = malloc(sizeof(Node));
 
     if (isdigit(expr[i])) {
-      char *newValue = malloc(sizeof(char));
-      *newValue = expr[i];
+      char newValue = expr[i];
       current->token = TOK_Number;
-      current->value = atof(newValue);
+      current->value = atof(&newValue);
       current->name = "NUMBER";
-      addItem(result, current);
+      addItem(&result, current);
       i++;
       continue;
     }
@@ -108,7 +104,7 @@ Node parseExpr(char *expr) {
       current->token = TOK_Var;
       current->name = malloc(sizeof(expr[i]));
       memcpy(current->name, &expr[i], sizeof(expr[i]));
-      addItem(result, current);
+      addItem(&result, current);
       i++;
       continue;
     }
@@ -168,18 +164,18 @@ Node parseExpr(char *expr) {
       break;
     }
 
-    addItem(result, current);
-
+    addItem(&result, current);
     i++;
   }
 
   Node *end = malloc(sizeof(Node));
   end->token = TOK_End;
   end->name = "FIN";
-  addItem(result, end);
+  addItem(&result, end);
 
-  combineNumbers(result);
-  removeRedundantNumbers(result);
-  reorderToPolishNotation(result);
-  return *result;
+  combineNumbers(&result);
+  removeRedundantNumbers(&result);
+
+  free(end);
+  return result;
 }

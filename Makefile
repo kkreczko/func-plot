@@ -8,7 +8,7 @@ release: app
 debug: CFLAGS = -Werror -g -Wall
 debug: app
 
-llvm: main.c
+llvm: src/main.c
 	mkdir -p llvm
 	clang -S -emit-llvm -lm src/main.c -o llvm/main.ll
 	clang -S -emit-llvm -lm src/parser.c -o llvm/parser.ll
@@ -38,5 +38,6 @@ setup:
 	mkdir -p obj
 
 clean:
+	rm -rf llvm
 	rm -rf obj
 	rm -f plot *.o *.ll
