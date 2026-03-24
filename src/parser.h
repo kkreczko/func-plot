@@ -32,6 +32,7 @@ typedef struct Node {
 } Node;
 
 void dump(Node *list);
+void clearMem(Node *list);
 
 Node parseExpr(char *expr);
 int verifyExpr(Node expr);
