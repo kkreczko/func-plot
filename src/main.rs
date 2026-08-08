@@ -1,8 +1,22 @@
-pub mod eval;
+pub mod tokenize;
 
 use std::env;
-use eval::tokenize;
+use tokenize::Token;
 
 fn main() {
-    println!(tokenize(env::args()));
+    let mut args = env::args().skip(1);
+
+    let (expr, range): (String, String) = match (args.next(), args.next()) {
+        (Some(expr), Some(range)) => (expr, range),
+        (Some(expr), None) => (expr, String::from("-10;10;0.1")),
+        _ => {
+            eprintln!("gib command");
+            return;
+        }
+    };
+
+    println!("{expr}");
+    println!("{range}");
+    println!("{:?}", Token::tokenize("val"));
+    println!("{:?}", Token::tokenize("err"));
 }
