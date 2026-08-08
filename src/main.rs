@@ -17,6 +17,6 @@ fn main() {
 
     println!("{expr}");
     println!("{range}");
-    println!("{:?}", Token::tokenize("val"));
-    println!("{:?}", Token::tokenize("err"));
+    println!("{:?}", Token::tokenize_word("num"));
+    println!("{:?}", Token::tokenize_word("err"));
 }
