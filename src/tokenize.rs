@@ -7,23 +7,34 @@ pub enum Token{
     TokMinus,
     TokDiv,
     TokMul,
-
+    TokParenOpen,
+    TokParenClose,
+    TokVar,
+    TokPower,
 }
 
 impl Token {
-    // todo should return token and value for numbers
     pub fn tokenize_word(word: &str) -> Self {
         match word {
-            "num" => Self::TokNum(10.0), // todo change to numeric string
             "+" => Self::TokPlus,
             "-" => Self::TokMinus,
             "/" => Self::TokDiv,
             "*" => Self::TokMul,
-            _ => Self::TokErr
+            "(" => Self::TokParenOpen,
+            ")" => Self::TokParenClose,
+            "x" => Self::TokVar,
+            "^" => Self::TokPower,
+            _ => match word.parse::<f64>() {
+                Ok(number) => Self::TokNum(number),
+                Err(_) => Self::TokErr,
+            },
         }
     }
 
-    // pub fn tokenize_expr(expr: &str) -> Vec<Token> {
-    //
-    // }
+    pub fn tokenize_expr(expr: &str) -> Vec<Self> {
+        expr
+            .split_whitespace()
+            .map(Self::tokenize_word)
+            .collect()
+    }
 }
