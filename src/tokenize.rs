@@ -1,6 +1,5 @@
-
 #[derive(Debug)]
-pub enum Token{
+pub enum Token {
     TokErr,
     TokNum(f64),
     TokPlus,
@@ -32,9 +31,22 @@ impl Token {
     }
 
     pub fn tokenize_expr(expr: &str) -> Vec<Self> {
-        expr
-            .split_whitespace()
-            .map(Self::tokenize_word)
-            .collect()
+        expr.split_whitespace().map(Self::tokenize_word).collect()
+    }
+
+    pub fn is_operator(&self) -> bool {
+        match self {
+            Self::TokPlus | Self::TokMinus | Self::TokMul | Self::TokDiv | Self::TokPower => true,
+            _ => false,
+        }
+    }
+
+    pub fn get_operator_order(&self) -> Option<u8> {
+        match self {
+            Self::TokPower => Some(3),
+            Self::TokDiv | Self::TokMul => Some(2),
+            Self::TokPlus | Self::TokMinus => Some(1),
+            _ => None,
+        }
     }
 }

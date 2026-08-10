@@ -1,5 +1,7 @@
+pub mod parse;
 pub mod tokenize;
 
+use parse::convert_to_rpn;
 use std::env;
 use tokenize::Token;
 
@@ -16,5 +18,7 @@ fn main() {
     };
 
     println!("{range}");
-    println!("{:?}", Token::tokenize_expr(&expr));
+    let tokenized_expr: Vec<Token> = Token::tokenize_expr(&expr);
+    let rpn_expr: Vec<Token> = convert_to_rpn(tokenized_expr);
+    println!("{:?}", rpn_expr);
 }
