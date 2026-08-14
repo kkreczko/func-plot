@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Token {
     TokErr,
     TokNum(f64),
@@ -46,6 +46,15 @@ impl Token {
             Self::TokPower => Some(3),
             Self::TokDiv | Self::TokMul => Some(2),
             Self::TokPlus | Self::TokMinus => Some(1),
+            _ => None,
+        }
+    }
+
+    // None when called not on operator
+    pub fn is_left_associated(&self) -> Option<bool> {
+        match self {
+            Self::TokPlus | Self::TokMinus | Self::TokMul | Self::TokDiv => Some(true),
+            Self::TokPower => Some(false),
             _ => None,
         }
     }
