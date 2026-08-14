@@ -6,3 +6,8 @@ core*
 vgcore*
 obj/
 
+
+
+# Added by cargo
+
+/target
