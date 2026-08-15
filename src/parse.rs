@@ -9,8 +9,9 @@ pub fn convert_to_rpn(tokens: Vec<Token>) -> Vec<Token> {
             output.push(token);
         } else if token.is_operator() {
             while !operator_stack.is_empty() {
-                if let Some(top) = operator_stack.first() {
-                    let top_order: u8 = top.get_operator_order().unwrap();
+                if let Some(top) = operator_stack.first()
+                    && let Some(top_order) = top.get_operator_order()
+                {
                     let token_order: u8 = token.get_operator_order().unwrap();
                     let can_pop: bool = top_order > token_order
                         || top_order == token_order && token.is_left_associated().unwrap();

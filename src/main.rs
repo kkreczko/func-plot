@@ -1,9 +1,6 @@
-pub mod parse;
-pub mod tokenize;
-
-use parse::convert_to_rpn;
+use func_plot::parse::convert_to_rpn;
+use func_plot::tokenize::Token;
 use std::env;
-use tokenize::Token;
 
 fn main() {
     let mut args = env::args().skip(1);
