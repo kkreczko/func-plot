@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Token {
     TokErr,
     TokNum(f64),
@@ -10,6 +10,7 @@ pub enum Token {
     TokParenClose,
     TokVar,
     TokPower,
+    TokWhitespace,
 }
 
 impl Token {
@@ -23,6 +24,7 @@ impl Token {
             ")" => Self::TokParenClose,
             "x" => Self::TokVar,
             "^" => Self::TokPower,
+            " " => Self::TokWhitespace,
             _ => match word.parse::<f64>() {
                 Ok(number) => Self::TokNum(number),
                 Err(_) => Self::TokErr,
