@@ -18,6 +18,7 @@ pub fn convert_to_rpn(tokens: Vec<Token>) -> Vec<Token> {
                         output.push(operator_stack.pop().unwrap());
                     }
                 }
+                break;
             }
             operator_stack.push(token);
         } else if matches!(&token, Token::TokParenOpen) {
