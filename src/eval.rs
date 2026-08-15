@@ -7,7 +7,7 @@ pub fn evaluate_operation(lval: f64, rval: f64, operator: Token) -> f64 {
         Token::TokMul => lval * rval,
         Token::TokDiv => lval / rval,
         Token::TokPower => lval.powf(rval),
-        _ => 0.0,
+        _ => 0.0, // something is not yes
     }
 }
 
