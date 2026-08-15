@@ -9,18 +9,17 @@ pub fn convert_to_rpn(tokens: Vec<Token>) -> Vec<Token> {
             output.push(token);
         } else if token.is_operator() {
             while !operator_stack.is_empty() {
-                match operator_stack.last() {
-                    Some(top) => {
-                        let top_order: u8 = top.get_operator_order().unwrap();
-                        let token_order: u8 = token.get_operator_order().unwrap();
-                        if top_order > token_order {
-                            output.push(operator_stack.pop().unwrap());
-                        } else if top_order == token_order && token.is_left_associated().unwrap() {
-                            output.push(operator_stack.pop().unwrap());
-                        }
+                if let Some(top) = operator_stack.first()
+                    && let Some(top_order) = top.get_operator_order()
+                {
+                    let token_order: u8 = token.get_operator_order().unwrap();
+                    let can_pop: bool = top_order > token_order
+                        || top_order == token_order && token.is_left_associated().unwrap();
+                    if can_pop {
+                        output.push(operator_stack.pop().unwrap());
                     }
-                    None => break,
                 }
+                break;
             }
             operator_stack.push(token);
         } else if matches!(&token, Token::TokParenOpen) {
