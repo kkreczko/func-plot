@@ -56,8 +56,6 @@ fn substitutes_every_occurrence_of_the_variable() {
     );
 }
 
-// evaluate_expression receives tokens in Reverse Polish Notation. These tests
-// describe the stack evaluator that will consume that representation.
 #[test]
 fn evaluates_a_simple_rpn_expression() {
     let expression = vec![Token::TokNum(2.0), Token::TokNum(3.0), Token::TokPlus];
