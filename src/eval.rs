@@ -13,9 +13,24 @@ pub fn evaluate_operation(lval: f64, rval: f64, operator: Token) -> f64 {
 
 pub fn evaluate_expression(expr: Vec<Token>, value: f64) -> f64 {
     let expr_with_sub_var: Vec<Token> = substitute_variable(&expr, value);
-    let mut result: f64 = 0.0;
+    let mut result_stack: Vec<f64> = Vec::new();
 
-    result
+    for token in expr_with_sub_var {
+        match token {
+            Token::TokNum(number) => result_stack.push(number),
+            operator if operator.is_operator() => {
+                let rval = result_stack.pop().unwrap();
+                let lval = result_stack.pop().unwrap();
+
+                let result = evaluate_operation(lval, rval, operator);
+
+                result_stack.push(result);
+            }
+            _ => {}
+        }
+    }
+
+    result_stack[0]
 }
 
 // generate second vector where x is defined for evaluation
