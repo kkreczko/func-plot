@@ -12,7 +12,10 @@ pub fn evaluate_operation(lval: f64, rval: f64, operator: Token) -> f64 {
 }
 
 pub fn evaluate_expression(expr: Vec<Token>, value: f64) -> f64 {
-    0.0
+    let expr_with_sub_var: Vec<Token> = substitute_variable(&expr, value);
+    let mut result: f64 = 0.0;
+
+    result
 }
 
 // generate second vector where x is defined for evaluation

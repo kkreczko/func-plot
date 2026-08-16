@@ -11,6 +11,10 @@ pub enum Token {
     TokVar,
     TokPower,
     TokWhitespace,
+    TokSin,
+    TokCos,
+    TokLog,
+    TokSqrt,
 }
 
 impl Token {
@@ -25,6 +29,10 @@ impl Token {
             "x" => Self::TokVar,
             "^" => Self::TokPower,
             " " => Self::TokWhitespace,
+            "cos" => Self::TokCos,
+            "sin" => Self::TokSin,
+            "log" => Self::TokLog,
+            "sqrt" => Self::TokSqrt,
             _ => match word.parse::<f64>() {
                 Ok(number) => Self::TokNum(number),
                 Err(_) => Self::TokErr,
@@ -52,7 +60,6 @@ impl Token {
         }
     }
 
-    // None when called not on operator
     pub fn is_left_associated(&self) -> Option<bool> {
         match self {
             Self::TokPlus | Self::TokMinus | Self::TokMul | Self::TokDiv => Some(true),

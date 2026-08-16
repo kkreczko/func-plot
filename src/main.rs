@@ -18,8 +18,6 @@ fn main() {
     println!("{range}");
     let tokenized_expr: Vec<Token> = Token::tokenize_expr(&expr);
     println!("{:?}", tokenized_expr);
-    let change_x: Vec<Token> = substitute_variable(&tokenized_expr, 11.0);
-    println!("{:?}", change_x);
     let rpn_expr: Vec<Token> = convert_to_rpn(tokenized_expr);
     println!("{:?}", rpn_expr);
 }
