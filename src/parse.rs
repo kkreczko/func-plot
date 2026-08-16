@@ -27,20 +27,20 @@ pub fn convert_to_rpn(tokens: Vec<Token>) -> Vec<Token> {
         } else if matches!(&token, Token::TokParenClose) {
             while !matches!(operator_stack.last().unwrap(), Token::TokParenOpen) {
                 if operator_stack.is_empty() {
-                    panic!("You didnt open one of the parenthesis and you are closing one");
+                    panic!("ERROR PARSER: One of the parenthesis was not open");
                 }
                 output.push(operator_stack.pop().unwrap());
             }
             operator_stack.pop();
         } else if token == Token::TokErr {
-            panic!("One of the tokens is unknown");
+            panic!("ERROR PARSER: Unknown token type");
         }
     }
 
     while !operator_stack.is_empty() {
         let temp_tok: Token = operator_stack.pop().unwrap();
         if matches!(temp_tok, Token::TokParenOpen | Token::TokParenClose) {
-            panic!("Too many parenthesis")
+            panic!("ERROR PARSER: Too many parentheses")
         }
         output.push(temp_tok);
     }

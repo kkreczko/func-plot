@@ -10,7 +10,9 @@ fn main() {
         (Some(expr), Some(range)) => (expr, range),
         (Some(expr), None) => (expr, String::from("-10;10;0.1")),
         _ => {
-            eprintln!("gib command");
+            eprintln!(
+                "Usage: func-plot <function> <optional:range>\nExample: func-plot \"10 * x ^ 2 + 22 * x - 10\" \"-10;10;0.1\""
+            );
             return;
         }
     };
