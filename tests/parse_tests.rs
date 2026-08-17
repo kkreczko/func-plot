@@ -1,8 +1,9 @@
-use func_plot::parse::convert_to_rpn;
+use func_plot::parse::{convert_to_rpn, is_rpn};
 use func_plot::tokenize::Token;
 
 fn rpn(expression: &str) -> Vec<Token> {
     convert_to_rpn(Token::tokenize_expr(expression))
+        .expect("test expression should convert to RPN")
 }
 
 #[test]
@@ -146,4 +147,65 @@ fn supports_nested_functions_without_whitespace() {
             Token::TokSqrt,
         ]
     );
+}
+
+#[test]
+fn recognizes_valid_rpn_with_binary_and_unary_operations() {
+    let expression = [
+        Token::TokVar,
+        Token::TokNum(2.0),
+        Token::TokPower,
+        Token::TokSin,
+    ];
+
+    assert!(is_rpn(&expression));
+}
+
+#[test]
+fn recognizes_single_operands_as_valid_rpn() {
+    for operand in [
+        Token::TokNum(2.0),
+        Token::TokVar,
+        Token::TokPi,
+        Token::TokEuler,
+    ] {
+        assert!(is_rpn(&[operand.clone()]), "rejected operand: {operand:?}");
+    }
+}
+
+#[test]
+fn rejects_an_empty_expression() {
+    assert!(!is_rpn(&[]));
+}
+
+#[test]
+fn rejects_an_operator_without_enough_operands() {
+    let expression = [Token::TokNum(2.0), Token::TokPlus];
+
+    assert!(!is_rpn(&expression));
+}
+
+#[test]
+fn rejects_a_unary_function_without_an_operand() {
+    assert!(!is_rpn(&[Token::TokSin]));
+}
+
+#[test]
+fn rejects_leftover_operands() {
+    let expression = [Token::TokNum(2.0), Token::TokNum(3.0)];
+
+    assert!(!is_rpn(&expression));
+}
+
+#[test]
+fn rejects_tokens_that_do_not_belong_in_rpn() {
+    for token in [
+        Token::TokParenOpen,
+        Token::TokParenClose,
+        Token::TokWhitespace,
+        Token::TokErr,
+    ] {
+        let expression = [Token::TokNum(2.0), token];
+        assert!(!is_rpn(&expression));
+    }
 }

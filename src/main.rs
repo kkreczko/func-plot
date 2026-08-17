@@ -1,6 +1,5 @@
-use func_plot::eval::substitute_variables_and_constants;
-use func_plot::parse::convert_to_rpn;
 use func_plot::tokenize::Token;
+use func_plot::{eval::evaluate_expression, parse::convert_to_rpn};
 use std::env;
 
 fn main() {
@@ -17,9 +16,20 @@ fn main() {
         }
     };
 
-    println!("{range}");
     let tokenized_expr: Vec<Token> = Token::tokenize_expr(&expr);
-    println!("{:?}", tokenized_expr);
-    let rpn_expr: Vec<Token> = convert_to_rpn(tokenized_expr);
-    println!("{:?}", rpn_expr);
+
+    match convert_to_rpn(tokenized_expr) {
+        Ok(rpn_expr) => {
+            let value = evaluate_expression(&rpn_expr, 10.0);
+            match value {
+                Ok(result) => println!("{result}"),
+                Err(error) => {
+                    eprintln! {"ERROR Failed evaluating expression {error:?}"}
+                }
+            }
+        }
+        Err(error) => {
+            eprintln!("ERROR Failed rpn conversion {error:?}")
+        }
+    }
 }

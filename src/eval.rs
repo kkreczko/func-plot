@@ -1,4 +1,12 @@
+use crate::eval::EvalErr::EvaluationOnNonRpnExpression;
+use crate::parse::convert_to_rpn;
+use crate::parse::is_rpn;
 use crate::tokenize::Token;
+
+#[derive(Debug)]
+pub enum EvalErr {
+    EvaluationOnNonRpnExpression,
+}
 
 pub fn evaluate_operation(lval: f64, rval: f64, operator: Token) -> f64 {
     match operator {
@@ -11,8 +19,12 @@ pub fn evaluate_operation(lval: f64, rval: f64, operator: Token) -> f64 {
     }
 }
 
-pub fn evaluate_expression(expr: Vec<Token>, value: f64) -> f64 {
-    let expr_with_sub_var: Vec<Token> = substitute_variables_and_constants(&expr, value);
+pub fn evaluate_expression(expr: &[Token], value: f64) -> Result<f64, EvalErr> {
+    if !is_rpn(expr) {
+        return Err(EvalErr::EvaluationOnNonRpnExpression);
+    }
+
+    let expr_with_sub_var: Vec<Token> = substitute_variables_and_constants(expr, value);
     let mut result_stack: Vec<f64> = Vec::new();
 
     for token in expr_with_sub_var {
@@ -30,11 +42,11 @@ pub fn evaluate_expression(expr: Vec<Token>, value: f64) -> f64 {
         }
     }
 
-    result_stack.pop().unwrap()
+    Ok(result_stack.pop().unwrap())
 }
 
 // generate second vector where x is defined for evaluation
-pub fn substitute_variables_and_constants(expr: &Vec<Token>, value: f64) -> Vec<Token> {
+pub fn substitute_variables_and_constants(expr: &[Token], value: f64) -> Vec<Token> {
     let mut result: Vec<Token> = Vec::new();
 
     for token in expr {

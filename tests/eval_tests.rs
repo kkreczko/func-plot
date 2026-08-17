@@ -1,4 +1,6 @@
-use func_plot::eval::{evaluate_expression, evaluate_operation, substitute_variables_and_constants};
+use func_plot::eval::{
+    evaluate_expression, evaluate_operation, substitute_variables_and_constants,
+};
 use func_plot::tokenize::Token;
 
 fn assert_close(actual: f64, expected: f64) {
@@ -7,6 +9,10 @@ fn assert_close(actual: f64, expected: f64) {
         difference < 1e-12,
         "expected {expected}, got {actual} (difference: {difference})"
     );
+}
+
+fn evaluate_successfully(expression: &[Token], value: f64) -> f64 {
+    evaluate_expression(expression, value).expect("test expression should evaluate successfully")
 }
 
 #[test]
@@ -60,14 +66,14 @@ fn substitutes_every_occurrence_of_the_variable() {
 fn evaluates_a_simple_rpn_expression() {
     let expression = vec![Token::TokNum(2.0), Token::TokNum(3.0), Token::TokPlus];
 
-    assert_eq!(evaluate_expression(expression, 0.0), 5.0);
+    assert_eq!(evaluate_successfully(&expression, 0.0), 5.0);
 }
 
 #[test]
 fn evaluates_an_rpn_expression_with_a_variable() {
     let expression = vec![Token::TokVar, Token::TokNum(2.0), Token::TokPower];
 
-    assert_eq!(evaluate_expression(expression, 3.0), 9.0);
+    assert_eq!(evaluate_successfully(&expression, 3.0), 9.0);
 }
 
 #[test]
@@ -75,7 +81,7 @@ fn evaluates_sine_as_a_unary_function() {
     let expression = vec![Token::TokVar, Token::TokSin];
 
     assert_close(
-        evaluate_expression(expression, std::f64::consts::FRAC_PI_2),
+        evaluate_successfully(&expression, std::f64::consts::FRAC_PI_2),
         1.0,
     );
 }
@@ -84,19 +90,19 @@ fn evaluates_sine_as_a_unary_function() {
 fn evaluates_nested_unary_functions() {
     let expression = vec![Token::TokVar, Token::TokCos, Token::TokSqrt];
 
-    assert_close(evaluate_expression(expression, 0.0), 1.0);
+    assert_close(evaluate_successfully(&expression, 0.0), 1.0);
 }
 
 #[test]
 fn evaluates_pi_constant() {
     let expression = vec![Token::TokPi];
 
-    assert_close(evaluate_expression(expression, 0.0), 3.14159);
+    assert_close(evaluate_successfully(&expression, 0.0), 3.14159);
 }
 
 #[test]
 fn evaluates_e_constant() {
     let expression = vec![Token::TokEuler];
 
-    assert_close(evaluate_expression(expression, 0.0), 2.71828);
+    assert_close(evaluate_successfully(&expression, 0.0), 2.71828);
 }

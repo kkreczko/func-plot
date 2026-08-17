@@ -64,11 +64,17 @@ impl Token {
         }
     }
 
-    pub fn is_left_associated(&self) -> Option<bool> {
+    pub fn is_left_associated(&self) -> bool {
         match self {
-            Self::TokPlus | Self::TokMinus | Self::TokMul | Self::TokDiv => Some(true),
-            Self::TokPower => Some(false),
-            _ => None,
+            Self::TokPlus | Self::TokMinus | Self::TokMul | Self::TokDiv => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_unary_function(&self) -> bool {
+        match self {
+            Self::TokSin | Self::TokCos | Self::TokLog | Self::TokSqrt => true,
+            _ => false,
         }
     }
 }
