@@ -1,4 +1,4 @@
-use func_plot::eval::substitute_variable;
+use func_plot::eval::substitute_variables_and_constants;
 use func_plot::parse::convert_to_rpn;
 use func_plot::tokenize::Token;
 use std::env;

@@ -15,6 +15,8 @@ pub enum Token {
     TokCos,
     TokLog,
     TokSqrt,
+    TokEuler,
+    TokPi,
 }
 
 impl Token {
@@ -33,6 +35,8 @@ impl Token {
             "sin" => Self::TokSin,
             "log" => Self::TokLog,
             "sqrt" => Self::TokSqrt,
+            "e" => Self::TokEuler,
+            "pi" => Self::TokPi,
             _ => match word.parse::<f64>() {
                 Ok(number) => Self::TokNum(number),
                 Err(_) => Self::TokErr,

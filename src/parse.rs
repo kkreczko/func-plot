@@ -5,7 +5,10 @@ pub fn convert_to_rpn(tokens: Vec<Token>) -> Vec<Token> {
     let mut operator_stack: Vec<Token> = Vec::new();
 
     for token in tokens {
-        if matches!(&token, Token::TokNum(_) | Token::TokVar) {
+        if matches!(
+            &token,
+            Token::TokNum(_) | Token::TokVar | Token::TokEuler | Token::TokPi
+        ) {
             output.push(token);
         } else if token.is_operator() {
             while !operator_stack.is_empty() {
@@ -27,7 +30,7 @@ pub fn convert_to_rpn(tokens: Vec<Token>) -> Vec<Token> {
         } else if matches!(&token, Token::TokParenClose) {
             while !matches!(operator_stack.last().unwrap(), Token::TokParenOpen) {
                 if operator_stack.is_empty() {
-                    panic!("ERROR PARSER: One of the parenthesis was not open");
+                    panic!("ERROR PARSER: One of the parentheses was not open");
                 }
                 output.push(operator_stack.pop().unwrap());
             }

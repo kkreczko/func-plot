@@ -12,7 +12,7 @@ pub fn evaluate_operation(lval: f64, rval: f64, operator: Token) -> f64 {
 }
 
 pub fn evaluate_expression(expr: Vec<Token>, value: f64) -> f64 {
-    let expr_with_sub_var: Vec<Token> = substitute_variable(&expr, value);
+    let expr_with_sub_var: Vec<Token> = substitute_variables_and_constants(&expr, value);
     let mut result_stack: Vec<f64> = Vec::new();
 
     for token in expr_with_sub_var {
@@ -30,16 +30,18 @@ pub fn evaluate_expression(expr: Vec<Token>, value: f64) -> f64 {
         }
     }
 
-    result_stack[0]
+    result_stack.pop().unwrap()
 }
 
 // generate second vector where x is defined for evaluation
-pub fn substitute_variable(expr: &Vec<Token>, value: f64) -> Vec<Token> {
+pub fn substitute_variables_and_constants(expr: &Vec<Token>, value: f64) -> Vec<Token> {
     let mut result: Vec<Token> = Vec::new();
 
     for token in expr {
         match token {
             Token::TokVar => result.push(Token::TokNum(value)),
+            Token::TokPi => result.push(Token::TokNum(3.14159)),
+            Token::TokEuler => result.push(Token::TokNum(2.71828)),
             other => result.push(other.clone()),
         };
     }

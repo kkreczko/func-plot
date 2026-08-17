@@ -1,4 +1,4 @@
-use func_plot::eval::{evaluate_expression, evaluate_operation, substitute_variable};
+use func_plot::eval::{evaluate_expression, evaluate_operation, substitute_variables_and_constants};
 use func_plot::tokenize::Token;
 
 fn assert_close(actual: f64, expected: f64) {
@@ -45,7 +45,7 @@ fn substitutes_every_occurrence_of_the_variable() {
     ];
 
     assert_eq!(
-        substitute_variable(&expression, 3.0),
+        substitute_variables_and_constants(&expression, 3.0),
         vec![
             Token::TokNum(3.0),
             Token::TokNum(2.0),
@@ -85,4 +85,18 @@ fn evaluates_nested_unary_functions() {
     let expression = vec![Token::TokVar, Token::TokCos, Token::TokSqrt];
 
     assert_close(evaluate_expression(expression, 0.0), 1.0);
+}
+
+#[test]
+fn evaluates_pi_constant() {
+    let expression = vec![Token::TokPi];
+
+    assert_close(evaluate_expression(expression, 0.0), 3.14159);
+}
+
+#[test]
+fn evaluates_e_constant() {
+    let expression = vec![Token::TokEuler];
+
+    assert_close(evaluate_expression(expression, 0.0), 2.71828);
 }
