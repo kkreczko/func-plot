@@ -1,5 +1,3 @@
-use crate::eval::EvalErr::EvaluationOnNonRpnExpression;
-use crate::parse::convert_to_rpn;
 use crate::parse::is_rpn;
 use crate::tokenize::Token;
 

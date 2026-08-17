@@ -7,7 +7,7 @@ pub enum ParseError {
     UnmatchedCloseParen,
 }
 
-pub fn convert_to_rpn(tokens: Vec<Token>) -> Result<Vec<Token>, ParseError> {
+pub fn convert_to_rpn(tokens: &[Token]) -> Result<Vec<Token>, ParseError> {
     let mut output: Vec<Token> = Vec::new();
     let mut operator_stack: Vec<Token> = Vec::new();
 
@@ -16,7 +16,7 @@ pub fn convert_to_rpn(tokens: Vec<Token>) -> Result<Vec<Token>, ParseError> {
             &token,
             Token::TokNum(_) | Token::TokVar | Token::TokEuler | Token::TokPi
         ) {
-            output.push(token);
+            output.push(token.clone());
         } else if token.is_operator() {
             while !operator_stack.is_empty() {
                 if let Some(top) = operator_stack.first()
@@ -31,9 +31,9 @@ pub fn convert_to_rpn(tokens: Vec<Token>) -> Result<Vec<Token>, ParseError> {
                 }
                 break;
             }
-            operator_stack.push(token);
+            operator_stack.push(token.clone());
         } else if matches!(&token, Token::TokParenOpen) {
-            operator_stack.push(token);
+            operator_stack.push(token.clone());
         } else if matches!(&token, Token::TokParenClose) {
             while !matches!(operator_stack.last().unwrap(), Token::TokParenOpen) {
                 if operator_stack.is_empty() {
@@ -42,7 +42,7 @@ pub fn convert_to_rpn(tokens: Vec<Token>) -> Result<Vec<Token>, ParseError> {
                 output.push(operator_stack.pop().unwrap());
             }
             operator_stack.pop();
-        } else if token == Token::TokErr {
+        } else if *token == Token::TokErr {
             return Err(ParseError::UnknownToken);
         }
     }
