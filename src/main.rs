@@ -18,26 +18,26 @@ fn main() {
         }
     };
 
-    let mut range_vec: Vec<f64> = Vec::new();
+    let mut arguments: Vec<f64> = Vec::new();
+    let mut values: Vec<f64> = Vec::new();
 
     match parse_range(&range) {
-        Ok((min, max, step)) => range_vec = generate_range(min, max, step),
+        Ok((min, max, step)) => arguments = generate_range(min, max, step),
         Err(error) => {
             eprint!("ERROR Failed parsing range {error:?} {range:?}");
         }
     };
 
-    println!("{:?}", range_vec);
-
     let tokenized_expr: Vec<Token> = Token::tokenize_expr(&expr);
 
     match convert_to_rpn(&tokenized_expr) {
         Ok(rpn_expr) => {
-            let value = evaluate_expression(&rpn_expr, 10.0);
-            match value {
-                Ok(result) => println!("{result}"),
-                Err(error) => {
-                    eprintln! {"ERROR Failed evaluating expression {error:?} with expr: \n{rpn_expr:?}"}
+            for argument in &arguments {
+                match evaluate_expression(&rpn_expr, *argument) {
+                    Ok(result) => values.push(result),
+                    Err(error) => {
+                        eprintln! {"ERROR Failed evaluating expression {error:?} with expr: \n{rpn_expr:?}"}
+                    }
                 }
             }
         }
@@ -45,4 +45,8 @@ fn main() {
             eprintln!("ERROR Failed rpn conversion {error:?} with expr: \n{tokenized_expr:?}")
         }
     }
+
+    println!("{expr} in {range}");
+    println!("{arguments:?}");
+    println!("{values:?}");
 }

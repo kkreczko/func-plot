@@ -1,6 +1,6 @@
 #[derive(Debug)]
 pub enum RangeParseError {
-    NotCorrectRangeString,
+    IncorrectRangeString,
 }
 
 pub fn generate_range(mut min: f64, max: f64, step: f64) -> Vec<f64> {
@@ -22,7 +22,7 @@ pub fn parse_range(range: &str) -> Result<(f64, f64, f64), RangeParseError> {
         match word.parse::<f64>() {
             Ok(number) => result.push(number),
             Err(_) => {
-                return Err(RangeParseError::NotCorrectRangeString);
+                return Err(RangeParseError::IncorrectRangeString);
             }
         }
     }
