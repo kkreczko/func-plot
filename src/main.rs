@@ -24,7 +24,7 @@ fn main() {
     match parse_range(&range) {
         Ok((min, max, step)) => arguments = generate_range(min, max, step),
         Err(error) => {
-            eprint!("ERROR Failed parsing range {error:?} {range:?}");
+            eprint!("ERROR Failed parsing range {error:?} {range:?}\n");
         }
     };
 
@@ -36,13 +36,13 @@ fn main() {
                 match evaluate_expression(&rpn_expr, *argument) {
                     Ok(result) => values.push(result),
                     Err(error) => {
-                        eprintln! {"ERROR Failed evaluating expression {error:?} with expr: \n{rpn_expr:?}"}
+                        eprintln! {"ERROR Failed evaluating expression {error:?} with expr: \n{rpn_expr:?}\n"}
                     }
                 }
             }
         }
         Err(error) => {
-            eprintln!("ERROR Failed rpn conversion {error:?} with expr: \n{tokenized_expr:?}")
+            eprintln!("ERROR Failed rpn conversion {error:?} with expr: \n{tokenized_expr:?}\n")
         }
     }
 
