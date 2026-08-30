@@ -1,6 +1,6 @@
 use func_plot::tokenize::Token;
 use func_plot::{
-    eval::evaluate_expression, parse::convert_to_rpn, range::generate_range, range::parse_range, draw::calculate_y_axis_bounds
+    eval::evaluate_expression, parse::convert_to_rpn, range::generate_range, range::parse_range 
 };
 use std::env;
 use raylib::prelude::*;
@@ -17,7 +17,7 @@ fn main() {
 
     let (expr, range): (String, String) = match (args.next(), args.next()) {
         (Some(expr), Some(range)) => (expr, range),
-        (Some(expr), None) => (expr, String::from("-10;10;0.5")),
+        (Some(expr), None) => (expr, String::from("-10;10;0.1")),
         _ => {
             eprintln!(
                 "Usage: func-plot <function> <optional:range>\nExample: func-plot \"10 * x ^ 2 + 22 * x - 10\" \"-10;10;0.5\""
