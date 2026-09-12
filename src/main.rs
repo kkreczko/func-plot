@@ -32,7 +32,7 @@ fn main() {
     match parse_range(&range) {
         Ok((min, max, step)) => arguments = generate_range(min, max, step),
         Err(error) => {
-            eprint!("ERROR Failed parsing range {error:?} {range:?}\n");
+            eprintln!("ERROR Failed parsing range {error:?} {range:?}\n");
         }
     };
 
