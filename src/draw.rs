@@ -1,6 +1,7 @@
-use::std::num;
+use ::std::num;
 
-fn calculate_y_axis_bounds(values: &[f64]) -> Option<(f64, f64)> {
+// calculate x or y bounds
+fn calculate_bounds(values: &[f64]) -> Option<(f64, f64)> {
     let mut min = f64::INFINITY;
     let mut max = f64::NEG_INFINITY;
 
@@ -18,7 +19,14 @@ fn calculate_y_axis_bounds(values: &[f64]) -> Option<(f64, f64)> {
     Some((min, max))
 }
 
-fn coordinates_to_pixels(x: f64, y: f64) -> (i32, i32) {
+pub fn get_dimension(values: &[f64]) -> i32 {
+    match calculate_bounds(values) {
+        Some((min, max)) => (min.abs() + max.abs()) as i32,
+        None => -1,
+    }
+}
+
+pub fn coordinates_to_pixels(x: f64, y: f64, screen_width: i32, screen_height: i32) -> (i32, i32) {
     (1, 0)
 }
 

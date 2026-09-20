@@ -2,7 +2,7 @@ use func_plot::parse::{convert_to_rpn, is_rpn};
 use func_plot::tokenize::Token;
 
 fn rpn(expression: &str) -> Vec<Token> {
-    convert_to_rpn(Token::tokenize_expr(expression))
+    convert_to_rpn(&Token::tokenize_expr(expression))
         .expect("test expression should convert to RPN")
 }
 

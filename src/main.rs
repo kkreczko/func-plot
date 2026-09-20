@@ -1,18 +1,12 @@
 use func_plot::tokenize::Token;
 use func_plot::{
-    eval::evaluate_expression, parse::convert_to_rpn, range::generate_range, range::parse_range 
+    draw::coordinates_to_pixels, draw::get_dimension, eval::evaluate_expression,
+    parse::convert_to_rpn, range::generate_range, range::parse_range,
 };
-use std::env;
 use raylib::prelude::*;
+use std::env;
 
 fn main() {
-    let (screen_width, screen_height) = (800, 600);
-
-    let (mut rl, thread) = raylib::init()
-        .size(screen_width, screen_height)
-        .title("func plot")
-        .build();
-
     let mut args = env::args().skip(1);
 
     let (expr, range): (String, String) = match (args.next(), args.next()) {
@@ -58,11 +52,17 @@ fn main() {
     println!("{arguments:?}");
     println!("{values:?}");
 
+    let (screen_width, screen_height) = (get_dimension(&arguments), get_dimension(&values));
+
+    let (mut rl, thread) = raylib::init()
+        .size(screen_width, screen_height)
+        .title("func plot")
+        .build();
+
     rl.set_target_fps(60);
-    
+
     while !rl.window_should_close() {
         let mut drawing = rl.begin_drawing(&thread);
         drawing.clear_background(Color::BLACK);
     }
-
 }
