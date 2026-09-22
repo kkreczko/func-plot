@@ -97,12 +97,15 @@ fn evaluates_nested_unary_functions() {
 fn evaluates_pi_constant() {
     let expression = vec![Token::TokPi];
 
-    assert_close(evaluate_successfully(&expression, 0.0), 3.14159);
+    assert_close(
+        evaluate_successfully(&expression, 0.0),
+        std::f64::consts::PI,
+    );
 }
 
 #[test]
 fn evaluates_e_constant() {
     let expression = vec![Token::TokEuler];
 
-    assert_close(evaluate_successfully(&expression, 0.0), 2.71828);
+    assert_close(evaluate_successfully(&expression, 0.0), std::f64::consts::E);
 }

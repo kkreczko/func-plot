@@ -12,6 +12,7 @@ raylib = {
     default-features = false,
     features = [
         "GLFW_BUILD_WAYLAND",
+        "GLFW_BUILD_X11",
         "SUPPORT_MODULE_RSHAPES",
         "SUPPORT_MODULE_RTEXTURES",
         "SUPPORT_MODULE_RTEXT",
@@ -21,3 +22,8 @@ raylib = {
 [features]
 default = ["graphics"]
 graphics = ["dep:raylib"]
+
+[[bin]]
+name = "func-plot"
+path = "src/main.rs"
+required-features = ["graphics"]

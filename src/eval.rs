@@ -13,7 +13,7 @@ pub fn evaluate_operation(lval: f64, rval: f64, operator: Token) -> f64 {
         Token::TokMul => lval * rval,
         Token::TokDiv => lval / rval,
         Token::TokPower => lval.powf(rval),
-        _ => 0.0, // something is not yes
+        _ => unreachable!("evaluate_operation needs a binary operator"),
     }
 }
 
@@ -22,39 +22,43 @@ pub fn evaluate_expression(expr: &[Token], value: f64) -> Result<f64, EvalErr> {
         return Err(EvalErr::EvaluationOnNonRpnExpression);
     }
 
-    let expr_with_sub_var: Vec<Token> = substitute_variables_and_constants(expr, value);
-    let mut result_stack: Vec<f64> = Vec::new();
-
-    for token in expr_with_sub_var {
-        match token {
-            Token::TokNum(number) => result_stack.push(number),
-            operator if operator.is_operator() => {
-                let rval = result_stack.pop().unwrap();
-                let lval = result_stack.pop().unwrap();
-
-                let result = evaluate_operation(lval, rval, operator);
-
-                result_stack.push(result);
-            }
-            _ => {}
-        }
-    }
-
-    Ok(result_stack.pop().unwrap())
-}
-
-// generate second vector where x is defined for evaluation
-pub fn substitute_variables_and_constants(expr: &[Token], value: f64) -> Vec<Token> {
-    let mut result: Vec<Token> = Vec::new();
-
+    let mut stack = Vec::new();
     for token in expr {
         match token {
-            Token::TokVar => result.push(Token::TokNum(value)),
-            Token::TokPi => result.push(Token::TokNum(3.14159)),
-            Token::TokEuler => result.push(Token::TokNum(2.71828)),
-            other => result.push(other.clone()),
-        };
+            Token::TokNum(number) => stack.push(*number),
+            Token::TokVar => stack.push(value),
+            Token::TokPi => stack.push(std::f64::consts::PI),
+            Token::TokEuler => stack.push(std::f64::consts::E),
+            operator if operator.is_operator() => {
+                let right = stack.pop().unwrap();
+                let left = stack.pop().unwrap();
+                stack.push(evaluate_operation(left, right, operator.clone()));
+            }
+            unary if unary.is_unary() => {
+                let operand: f64 = stack.pop().unwrap();
+                let result = match unary {
+                    Token::TokNeg => -operand,
+                    Token::TokSin => operand.sin(),
+                    Token::TokCos => operand.cos(),
+                    Token::TokLog => operand.ln(),
+                    Token::TokSqrt => operand.sqrt(),
+                    _ => unreachable!(),
+                };
+                stack.push(result);
+            }
+            _ => unreachable!("is_rpn rejects this token"),
+        }
     }
+    Ok(stack.pop().unwrap())
+}
 
-    result
+pub fn substitute_variables_and_constants(expr: &[Token], value: f64) -> Vec<Token> {
+    expr.iter()
+        .map(|token| match token {
+            Token::TokVar => Token::TokNum(value),
+            Token::TokPi => Token::TokNum(std::f64::consts::PI),
+            Token::TokEuler => Token::TokNum(std::f64::consts::E),
+            other => other.clone(),
+        })
+        .collect()
 }

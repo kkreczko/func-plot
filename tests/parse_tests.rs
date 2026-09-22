@@ -74,7 +74,7 @@ fn handles_parenthesized_expression_before_power() {
 fn support_no_whitespace_exprs() {
     assert_eq!(
         rpn("1+1"),
-        vec![Token::TokNum(1.0), Token::TokPlus, Token::TokNum(1.0),]
+        vec![Token::TokNum(1.0), Token::TokNum(1.0), Token::TokPlus]
     );
 }
 
@@ -169,7 +169,10 @@ fn recognizes_single_operands_as_valid_rpn() {
         Token::TokPi,
         Token::TokEuler,
     ] {
-        assert!(is_rpn(&[operand.clone()]), "rejected operand: {operand:?}");
+        assert!(
+            is_rpn(std::slice::from_ref(&operand)),
+            "rejected operand: {operand:?}"
+        );
     }
 }
 

@@ -1,66 +1,102 @@
 use crate::tokenize::Token;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ParseError {
     UnknownToken,
     UnmatchedOpenParen,
     UnmatchedCloseParen,
+    MissingOperand,
+    MissingOperator,
+    FunctionNeedsParentheses,
 }
 
 pub fn convert_to_rpn(tokens: &[Token]) -> Result<Vec<Token>, ParseError> {
-    let mut output: Vec<Token> = Vec::new();
-    let mut operator_stack: Vec<Token> = Vec::new();
+    let tokens: Vec<&Token> = tokens
+        .iter()
+        .filter(|token| **token != Token::TokWhitespace)
+        .collect();
+    let mut output = Vec::new();
+    let mut operators: Vec<Token> = Vec::new();
+    let mut needs_operand = true;
 
-    for token in tokens {
-        if matches!(
-            &token,
-            Token::TokNum(_) | Token::TokVar | Token::TokEuler | Token::TokPi
-        ) {
-            output.push(token.clone());
-        } else if token.is_operator() {
-            while !operator_stack.is_empty() {
-                if let Some(top) = operator_stack.first()
-                    && let Some(top_order) = top.get_operator_order()
-                {
-                    let token_order: u8 = token.get_operator_order().unwrap();
-                    let can_pop: bool = top_order > token_order
-                        || top_order == token_order && token.is_left_associated();
-                    if can_pop {
-                        output.push(operator_stack.pop().unwrap());
-                    }
+    for (index, token) in tokens.iter().enumerate() {
+        match token {
+            Token::TokNum(_) | Token::TokVar | Token::TokEuler | Token::TokPi => {
+                if !needs_operand {
+                    return Err(ParseError::MissingOperator);
                 }
-                break;
+                output.push((*token).clone());
+                needs_operand = false;
             }
-            operator_stack.push(token.clone());
-        } else if matches!(&token, Token::TokParenOpen) {
-            operator_stack.push(token.clone());
-        } else if matches!(&token, Token::TokParenClose) {
-            while !matches!(operator_stack.last().unwrap(), Token::TokParenOpen) {
-                if operator_stack.is_empty() {
-                    return Err(ParseError::UnmatchedOpenParen);
+            token if token.is_unary_function() => {
+                if !needs_operand {
+                    return Err(ParseError::MissingOperator);
                 }
-                output.push(operator_stack.pop().unwrap());
+                if !matches!(tokens.get(index + 1), Some(Token::TokParenOpen)) {
+                    return Err(ParseError::FunctionNeedsParentheses);
+                }
+                operators.push((*token).clone());
             }
-            operator_stack.pop();
-        } else if *token == Token::TokErr {
-            return Err(ParseError::UnknownToken);
+            Token::TokParenOpen => {
+                if !needs_operand {
+                    return Err(ParseError::MissingOperator);
+                }
+                operators.push(Token::TokParenOpen);
+            }
+            Token::TokParenClose => {
+                if !operators.contains(&Token::TokParenOpen) {
+                    return Err(ParseError::UnmatchedCloseParen);
+                }
+                if needs_operand {
+                    return Err(ParseError::MissingOperand);
+                }
+                while !matches!(operators.last(), Some(Token::TokParenOpen)) {
+                    output.push(operators.pop().unwrap());
+                }
+                operators.pop();
+                if operators.last().is_some_and(Token::is_unary_function) {
+                    output.push(operators.pop().unwrap());
+                }
+                needs_operand = false;
+            }
+            Token::TokPlus | Token::TokMinus if needs_operand => {
+                if **token == Token::TokMinus {
+                    operators.push(Token::TokNeg);
+                }
+            }
+            token if token.is_operator() => {
+                if needs_operand {
+                    return Err(ParseError::MissingOperand);
+                }
+                let order = token.get_operator_order().unwrap();
+                while operators.last().is_some_and(|top| {
+                    top.get_operator_order().is_some_and(|top_order| {
+                        top_order > order || (top_order == order && token.is_left_associated())
+                    })
+                }) {
+                    output.push(operators.pop().unwrap());
+                }
+                operators.push((*token).clone());
+                needs_operand = true;
+            }
+            _ => return Err(ParseError::UnknownToken),
         }
     }
 
-    while !operator_stack.is_empty() {
-        let temp_tok: Token = operator_stack.pop().unwrap();
-        if matches!(temp_tok, Token::TokParenOpen | Token::TokParenClose) {
-            return Err(ParseError::UnmatchedCloseParen);
-        }
-        output.push(temp_tok);
+    if needs_operand {
+        return Err(ParseError::MissingOperand);
     }
-
+    while let Some(token) = operators.pop() {
+        if token == Token::TokParenOpen {
+            return Err(ParseError::UnmatchedOpenParen);
+        }
+        output.push(token);
+    }
     Ok(output)
 }
 
 pub fn is_rpn(expr: &[Token]) -> bool {
     let mut depth = 0;
-
     for token in expr {
         match token {
             Token::TokNum(_) | Token::TokPi | Token::TokEuler | Token::TokVar => depth += 1,
@@ -70,7 +106,7 @@ pub fn is_rpn(expr: &[Token]) -> bool {
                 }
                 depth -= 1;
             }
-            unary_func if unary_func.is_unary_function() => {
+            unary if unary.is_unary() => {
                 if depth < 1 {
                     return false;
                 }
@@ -78,6 +114,5 @@ pub fn is_rpn(expr: &[Token]) -> bool {
             _ => return false,
         }
     }
-
     depth == 1
 }
